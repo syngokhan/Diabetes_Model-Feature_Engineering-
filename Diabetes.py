@@ -116,32 +116,40 @@ cat_cols, num_cols , cat_but_car = grab_col_names(df,details=True)
 # In[16]:
 
 
-for cat in cat_cols:
-    cat_summary(df, cat ,plot = True)
+print("Cat Cols :\n", cat_cols,end = "\n\n")
+print("Num Cols :\n", num_cols,end = "\n\n")
+print("Cat But Car :\n ", cat_but_car)
 
 
 # In[17]:
 
 
-for num in num_cols:
-    num_summary(df , num ,plot = True)
+for cat in cat_cols:
+    cat_summary(df, cat ,plot = True)
 
 
 # In[18]:
 
 
 for num in num_cols:
-    target_summary_with_num(df, "Outcome", num)
+    num_summary(df , num ,plot = True)
 
 
 # In[19]:
+
+
+for num in num_cols:
+    target_summary_with_num(df, "Outcome", num)
+
+
+# In[20]:
 
 
 for cat in cat_cols:
     target_summary_with_cat(df , "Outcome" , cat)
 
 
-# In[20]:
+# In[21]:
 
 
 sns.pairplot(df)
@@ -150,38 +158,38 @@ plt.show()
 
 # ## NA_Values
 
-# In[21]:
+# In[22]:
 
 
 na_values = missing_values_table(df , na_name=True)
 
 
-# In[22]:
+# In[23]:
 
 
 missing_vs_target(df ,"Outcome", na_values)
 
 
-# In[23]:
+# In[24]:
 
 
 median = df.groupby("Outcome").median().iloc[:,1:-2]
 median
 
 
-# In[24]:
+# In[25]:
 
 
 df[["Outcome"]].value_counts()
 
 
-# In[25]:
+# In[26]:
 
 
 na_values
 
 
-# In[26]:
+# In[27]:
 
 
 def distplot_na_values(dataframe,na_values):
@@ -207,13 +215,13 @@ def distplot_na_values(dataframe,na_values):
     plt.show()
 
 
-# In[27]:
+# In[28]:
 
 
 distplot_na_values(df , na_values)
 
 
-# In[28]:
+# In[29]:
 
 
 for na_col in na_values:
@@ -221,19 +229,19 @@ for na_col in na_values:
     df.loc[ ((df["Outcome"] == 1) & (df[na_col].isnull())), na_col] = df.groupby("Outcome")[na_col].median()[1]
 
 
-# In[29]:
+# In[30]:
 
 
 check_na_values(df)
 
 
-# In[30]:
+# In[31]:
 
 
 distplot_na_values(df , na_values)
 
 
-# In[31]:
+# In[32]:
 
 
 def boxplot(dataframe, num_cols):
@@ -254,40 +262,40 @@ def boxplot(dataframe, num_cols):
     plt.show()
 
 
-# In[32]:
-
-
-boxplot(df , num_cols)
-
-
 # In[33]:
 
 
-for col in num_cols:
-    print("For {} Outliers : {}".format(col.upper(),check_outliers(df , col)))
+boxplot(df , num_cols)
 
 
 # In[34]:
 
 
 for col in num_cols:
-    replace_with_thresholds(df ,col)
+    print("For {} Outliers : {}".format(col.upper(),check_outliers(df , col)))
 
 
 # In[35]:
 
 
-boxplot(df,num_cols)
+for col in num_cols:
+    replace_with_thresholds(df ,col)
 
 
 # In[36]:
+
+
+boxplot(df,num_cols)
+
+
+# In[37]:
 
 
 for col in num_cols:
     print("For {} Outliers : {}".format(col.upper(),check_outliers(df , col)))
 
 
-# In[37]:
+# In[38]:
 
 
 check_df(df)
@@ -295,13 +303,13 @@ check_df(df)
 
 # ## Feature Engineering
 
-# In[38]:
+# In[39]:
 
 
 df[["BMI"]].describe().T
 
 
-# In[39]:
+# In[40]:
 
 
 bins = [0 ,18.4 ,24.9 ,29.9 ,100]
@@ -311,7 +319,7 @@ df["NEW_BMI"] = pd.cut(df["BMI"], bins = bins , labels = labels)
 df[["NEW_BMI"]].describe().T
 
 
-# In[40]:
+# In[41]:
 
 
 # Converting BMI Values Categorically
@@ -335,13 +343,13 @@ def analyses(dataframe ,col ):
     dataframe[col].value_counts().plot.pie( autopct = "%1.0f%%", shadow = True , figsize = (7,7))
 
 
-# In[41]:
+# In[42]:
 
 
 analyses(df , "NEW_BMI")
 
 
-# In[42]:
+# In[43]:
 
 
 from scipy.stats import shapiro, kruskal, mannwhitneyu
@@ -363,7 +371,7 @@ def shapiro_(df, cols_name , target):
             print(f"For {col.upper()} , H1: Not Normal Distribution..." , end = "\n\n")
 
 
-# In[43]:
+# In[44]:
 
 
 new_bmi = [col for col in df["NEW_BMI"].unique() if col not in "Thin"]
@@ -371,7 +379,7 @@ new_bmi = [col for col in df["NEW_BMI"].unique() if col not in "Thin"]
 shapiro_(df , new_bmi, "NEW_BMI")
 
 
-# In[44]:
+# In[45]:
 
 
 p_value = kruskal(df.loc[df["NEW_BMI"] == "Normal", "Outcome"],
@@ -396,7 +404,7 @@ else:
 
 # ## 
 
-# In[45]:
+# In[46]:
 
 
 # Converting Glucose Values Categorically
@@ -404,7 +412,7 @@ else:
 df[["Glucose"]].describe().T
 
 
-# In[46]:
+# In[47]:
 
 
 bins = [0 , 140, 200, 300]
@@ -415,13 +423,13 @@ df["NEW_GLUCOSE"] = pd.cut(df["Glucose"] , bins = bins , labels = labels)
 df[["NEW_GLUCOSE"]].describe().T
 
 
-# In[47]:
+# In[48]:
 
 
 analyses(df , "NEW_GLUCOSE")
 
 
-# In[48]:
+# In[49]:
 
 
 new_glucose = [col for col in df["NEW_GLUCOSE"].unique() if col not in "Diabetes"]
@@ -429,7 +437,7 @@ new_glucose = [col for col in df["NEW_GLUCOSE"].unique() if col not in "Diabetes
 shapiro_(df , new_glucose , "NEW_GLUCOSE") 
 
 
-# In[49]:
+# In[50]:
 
 
 p_value = mannwhitneyu(df.loc[ df["NEW_GLUCOSE"] == "PeriDiabetes", "Outcome"],
@@ -452,7 +460,7 @@ else:
 
 # ## 
 
-# In[50]:
+# In[51]:
 
 
 # Converting Insulin Values Categorically
@@ -460,7 +468,7 @@ else:
 df[["Insulin"]].describe().T
 
 
-# In[51]:
+# In[52]:
 
 
 def Insulin(dataframe):
@@ -476,7 +484,7 @@ def Insulin(dataframe):
         return "AbNormal"
 
 
-# In[52]:
+# In[53]:
 
 
 df["NEW_INSULIN"] = df.apply(Insulin, axis = 1)
@@ -484,13 +492,13 @@ df["NEW_INSULIN"] = df.apply(Insulin, axis = 1)
 df[["NEW_INSULIN"]].describe().T
 
 
-# In[53]:
+# In[54]:
 
 
 analyses(df , "NEW_INSULIN")
 
 
-# In[54]:
+# In[55]:
 
 
 new_insulin = [col for col in df["NEW_INSULIN"].unique()]
@@ -498,7 +506,7 @@ new_insulin = [col for col in df["NEW_INSULIN"].unique()]
 shapiro_(df, new_insulin, "NEW_INSULIN")
 
 
-# In[55]:
+# In[56]:
 
 
 p_value = mannwhitneyu(df.loc[ df["NEW_INSULIN"] == "Normal", "Outcome"],
@@ -521,7 +529,7 @@ else:
 
 # ## 
 
-# In[56]:
+# In[57]:
 
 
 # Converting age variable to categorical variable
@@ -529,20 +537,20 @@ else:
 df[["Age"]].describe().T
 
 
-# In[57]:
+# In[58]:
 
 
 df.loc[ (df["Age"] >= 21) & (df["Age"] < 50), "NEW_AGE_CAT"] = "mature"
 df.loc[ df["Age"] >= 50, "NEW_AGE_CAT"] = "senior"
 
 
-# In[58]:
+# In[59]:
 
 
 analyses(df, "NEW_AGE_CAT")
 
 
-# In[59]:
+# In[60]:
 
 
 new_age_cat = [col for col in df["NEW_AGE_CAT"].unique()]
@@ -550,7 +558,7 @@ new_age_cat = [col for col in df["NEW_AGE_CAT"].unique()]
 shapiro_(df, new_age_cat , "NEW_AGE_CAT")
 
 
-# In[60]:
+# In[61]:
 
 
 p_value = mannwhitneyu(df.loc[ df["NEW_AGE_CAT"] == "senior", "Outcome"],
@@ -573,7 +581,7 @@ else:
 
 # ## 
 
-# In[61]:
+# In[62]:
 
 
 ##
@@ -597,13 +605,13 @@ df.loc[ ((df["BMI"] >=29.9) & (df["BMI"] < 100)) & ((df["Age"] >=21) & (df["Age"
 df.loc[ ((df["BMI"] >= 29.9) & (df["BMI"] < 100)) & (df["Age"] >= 50), "NEW_BMI_AGE"] = "ObeseSenior"
 
 
-# In[62]:
+# In[63]:
 
 
 analyses(df, "NEW_BMI_AGE")
 
 
-# In[63]:
+# In[64]:
 
 
 new_bmi_age = [col for col in df["NEW_BMI_AGE"].unique() if col not in "ThinMature"]
@@ -611,7 +619,7 @@ new_bmi_age = [col for col in df["NEW_BMI_AGE"].unique() if col not in "ThinMatu
 shapiro_(df ,new_bmi_age, "NEW_BMI_AGE")
 
 
-# In[64]:
+# In[65]:
 
 
 pvalue = kruskal(df.loc[df["NEW_BMI_AGE"] == "ObeseSenior" , "Outcome"],
@@ -638,7 +646,7 @@ else:
 
 # ## 
 
-# In[65]:
+# In[66]:
 
 
 ###
@@ -656,19 +664,19 @@ df.loc[((df["Glucose"] >= 200) & (df["Glucose"] < 300)) & ((df["Age"] >=21) & (d
 df.loc[((df["Glucose"] >=200) & (df["Glucose"] < 300)) & (df["Age"] >= 50),       "NEW_AGE_GLUCOSE"] = "DiabetesSenior"
 
 
-# In[66]:
+# In[67]:
 
 
 df["NEW_AGE_GLUCOSE"].unique()
 
 
-# In[67]:
+# In[68]:
 
 
 analyses(df, "NEW_AGE_GLUCOSE")
 
 
-# In[68]:
+# In[69]:
 
 
 new_age_glucose = [col for col in df["NEW_AGE_GLUCOSE"].unique()]
@@ -676,7 +684,7 @@ new_age_glucose = [col for col in df["NEW_AGE_GLUCOSE"].unique()]
 shapiro_(df,new_age_glucose, "NEW_AGE_GLUCOSE")
 
 
-# In[69]:
+# In[70]:
 
 
 p_value = kruskal(df.loc[df["NEW_AGE_GLUCOSE"] == "PeriDiabetesSenior", "Outcome" ],
@@ -701,7 +709,7 @@ else:
     print(f"For P_Value : {p_value}\n\n{two}")
 
 
-# In[70]:
+# In[71]:
 
 
 df.head()
@@ -709,7 +717,7 @@ df.head()
 
 # ## Label_Encoding and One-Hot Enconding İşlemleri
 
-# In[71]:
+# In[72]:
 
 
 def nunique_dtypes(dataframe):
@@ -723,53 +731,69 @@ def nunique_dtypes(dataframe):
 nunique_dtypes(df)
 
 
-# In[72]:
-
-
-cat_cols , num_cols, cat_but_car = grab_col_names(df)
-
-
 # In[73]:
+
+
+cat_cols , num_cols, cat_but_car = grab_col_names(df, details=True)
+
+
+# In[74]:
+
+
+print("Cat Cols :\n", cat_cols,end = "\n\n")
+print("Num Cols :\n", num_cols,end = "\n\n")
+print("Cat But Car :\n ", cat_but_car)
+
+
+# In[75]:
 
 
 new_cat_cols = [col for col in cat_cols if col not in "Outcome"]
 new_cat_cols
 
 
-# In[74]:
+# In[76]:
 
 
 for col in new_cat_cols:
     label_encoder(df , col)
 
 
-# In[75]:
+# In[77]:
 
 
 nunique_dtypes(df)
 
 
-# In[76]:
+# In[78]:
 
 
 df = one_hot_encoder(df , new_cat_cols,drop_first=True)
 df.head()
 
 
-# In[77]:
+# In[79]:
 
 
 cat_cols , num_cols, cat_but_car = grab_col_names(df,details=True)
 
 
-# In[78]:
+# In[80]:
+
+
+print("Cat Cols :\n", cat_cols,end = "\n\n")
+print("Num Cols :\n", num_cols,end = "\n\n")
+print("Cat But Car :\n ", cat_but_car)
+
+
+# In[81]:
 
 
 for col in num_cols:
     print(f"For {col.upper()} Outliers : {check_outliers(df ,col)}",end = "\n\n")
 
 
-# In[79]:
+# In[82]:
 
 
 from sklearn.preprocessing import StandardScaler
@@ -780,7 +804,7 @@ df[num_cols] = scaler.fit_transform(df[num_cols])
 df.head()
 
 
-# In[80]:
+# In[83]:
 
 
 X = df.drop("Outcome" , axis = 1)
@@ -791,7 +815,7 @@ y = df["Outcome"]
 # 
 # ## Success Evaluation (Validation) with Holdout Method
 
-# In[81]:
+# In[84]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -801,7 +825,7 @@ from sklearn.metrics import r2_score,f1_score,precision_score,recall_score,accur
 from sklearn.model_selection import train_test_split
 
 
-# In[82]:
+# In[85]:
 
 
 def score_test(model , X , y , roc_plot = True , matrix = True):
@@ -859,7 +883,7 @@ def score_test(model , X , y , roc_plot = True , matrix = True):
         plt.show()
 
 
-# In[83]:
+# In[86]:
 
 
 score_test(LogisticRegression() , X, y)
@@ -867,7 +891,7 @@ score_test(LogisticRegression() , X, y)
 
 # ## Success Evaluation with CV and Hyperparameter Optimization with GridSearchCV
 
-# In[84]:
+# In[87]:
 
 
 logistic_param_grid ={'penalty' : ['l1', 'l2', 'elasticnet', 'none'],
@@ -879,7 +903,7 @@ logistic_param_grid ={'penalty' : ['l1', 'l2', 'elasticnet', 'none'],
 models = [("LR",LogisticRegression(),logistic_param_grid)]
 
 
-# In[85]:
+# In[88]:
 
 
 from sklearn.model_selection import cross_validate
@@ -911,13 +935,13 @@ def base_model(models , X, y, cv = 5):
     return data
 
 
-# In[86]:
+# In[89]:
 
 
 base_model(models,X, y, cv = 5)
 
 
-# In[87]:
+# In[90]:
 
 
 def hyperparamters_optimizer(models,X,y,cv = 5):
@@ -985,25 +1009,25 @@ def hyperparamters_optimizer(models,X,y,cv = 5):
         
 
 
-# In[88]:
+# In[91]:
 
 
 data , models_dict = hyperparamters_optimizer(models,X,y, cv = 10)
 
 
-# In[89]:
+# In[92]:
 
 
 data
 
 
-# In[90]:
+# In[93]:
 
 
 models_dict["LR"].get_params()
 
 
-# In[91]:
+# In[94]:
 
 
 def roc_auc_graph(model, X ,y):
@@ -1043,19 +1067,19 @@ def confusion_matrix_graph(model, X ,y):
         plt.show()
 
 
-# In[92]:
+# In[95]:
 
 
 roc_auc_graph(models_dict["LR"], X ,y)
 
 
-# In[93]:
+# In[96]:
 
 
 confusion_matrix_graph(models_dict["LR"], X ,y)
 
 
-# In[94]:
+# In[97]:
 
 
 # save final_model
@@ -1066,7 +1090,7 @@ for name,model,params in models:
     pd.to_pickle(models_dict[name], open(name+"_diabetes.pkl","wb"))
 
 
-# In[96]:
+# In[98]:
 
 
 pd.to_pickle(df, open("diabetes.pkl","wb"))
