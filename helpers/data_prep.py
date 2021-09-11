@@ -231,9 +231,13 @@ def rare_analyser(dataframe, target, cat_cols):
     for col in cat_cols:
         print("FOR" , col.upper(), ":", len(dataframe[col].value_counts()),end = "\n\n")
         #print(col, ":", dataframe[col].nunique())
-        print(pd.DataFrame({"COUNT" : dataframe[col].value_counts(),
-                            "RATIO" : dataframe[col].value_counts() / len(dataframe), 
-                            "TARGET_MEAN" : dataframe.groupby(col)[target].mean()}), end = "\n\n")
+        data = pd.DataFrame({"COUNT" : dataframe[col].value_counts(), \
+                            "RATIO" : dataframe[col].value_counts() / len(dataframe), \
+                            "TARGET_MEAN" : dataframe.groupby(col)[target].mean()})
+        
+        data = data.sort_values(by = "TARGET_MEAN", ascending = False)
+        
+        print(data,end= "\n\n")
 
 
 # In[15]:

@@ -122,6 +122,7 @@ def grab_col_names(dataframe , cat_th = 10 , car_th = 20 ,details = False):
     cat_but_car = [col for col in dataframe.columns if dataframe[col].dtype == "object" and                    (dataframe[col].nunique() > car_th)]
     
     cat_cols = cat_cols + num_but_cat
+    cat_cols = [col for col in cat_cols if col not in cat_but_car]
     
     # Num_Cols
     
